@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <script src="three.min.js"></script>
+    <script src="GLTFLoader.js"></script>
+    <script src="OrbitControls.js"></script>
+    <script>
+        let scene, camera, renderer;
+
+        function Init(){
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color('#ccc');
+            
+            camera = new THREE.PerspectiveCamera(25, window.innerWidth/window.innerHeight,1,10000);
+            camera.position.x = 100;
+            camera.position.y = 380;
+            camera.position.z = 2500;
+
+            
+            hlight = new THREE.AmbientLight(0xc4c4c4, 1);
+            scene.add(hlight);
+
+            directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(0,1,0);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+
+            light1 = new THREE.PointLight(0xc4c4c4,5);
+            light1.position.set(0,300,500);
+            scene.add(light1);
+
+            light2 = new THREE.PointLight(0xc4c4c4,1);
+            light2.position.set(500,100,10);
+            scene.add(light2);
+
+            light3 = new THREE.PointLight(0xc4c4c4,5);
+            light3.position.set(0,100,-500);
+            scene.add(light3);
+
+            light4 = new THREE.PointLight(0xc4c4c4,5);
+            light4.position.set(-500,300,0);
+            scene.add(light4);
+      
+            renderer = new THREE.WebGLRenderer({antialias: true});
+            renderer.setSize(window.innerWidth,window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+  
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.addEventListener('change', renderer);
+
+
+            let loader = new THREE.GLTFLoader();
+            loader.load('scene.gltf', function(gltf) {
+                
+                // car = gltf.scene.children[0];
+                // car.scale.set(0.5,0.5,0.5);
+                
+                scene.add(gltf.scene);
+                renderer.render(scene, camera);
+                animate();
+            }, function(xhr){
+                console.log(xhr.loaded / xhr.total * 100 + '% loaded');
+
+            }, function(error){
+                console.log('An error happened ' + error);
+
+            });
+        }
+
+        function animate(){
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+        Init();
+    </script>
+</body>
+</html>
